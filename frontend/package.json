@@ -1,0 +1,19 @@
+{
+  "name": "typeweb-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write \"{src,scripts,test}/**/*.{js,mjs,ts,css}\" index.html package.json ../compose.yaml ../backend/pom.xml ../.prettierrc.json",
+    "format:check": "prettier --check \"{src,scripts,test}/**/*.{js,mjs,ts,css}\" index.html package.json ../compose.yaml ../backend/pom.xml ../.prettierrc.json",
+    "dev": "node scripts/dev.mjs",
+    "lint": "node --check src/app.js && node --check src/metrics.js && node --check src/history-chart.js && node --check scripts/dev.mjs && node --check scripts/dev-login.mjs && node --check scripts/build.mjs",
+    "test": "node --test",
+    "test:local": "node scripts/local-smoke.mjs",
+    "build": "node scripts/build.mjs"
+  },
+  "devDependencies": {
+    "@prettier/plugin-xml": "3.4.1",
+    "prettier": "3.6.2"
+  }
+}

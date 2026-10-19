@@ -1,0 +1,347 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>字光 TypeLight · 打字練習</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="/">字光 <span>TypeLight</span></a>
+      <nav aria-label="主要導覽">
+        <button data-view="practice">練習課程</button
+        ><button data-view="statistics">我的統計</button
+        ><button data-view="history">練習紀錄</button
+        ><button data-view="account" id="account-nav">登入 / 註冊</button
+        ><button id="logout" hidden>登出</button>
+      </nav>
+    </header>
+    <main>
+      <div id="notice" role="status" aria-live="polite"></div>
+      <section id="practice" class="view">
+        <div id="guest-intro">
+          <div class="hero">
+            <span class="eyebrow">MAKE EVERY KEYSTROKE COUNT</span>
+            <h1>每一次敲鍵，<br />都更靠近流暢。</h1>
+            <p>放慢一點，找回節奏。從一段文字開始，累積你的進步。</p>
+            <span class="pill">中英文練習 · 即時速度分析</span>
+          </div>
+          <div class="section-heading">
+            <h2>探索練習課程</h2>
+            <select id="language" aria-label="選擇打字類型">
+              <option value="">中打與英打</option>
+              <option value="zh">中打</option>
+              <option value="en">英打</option></select
+            ><select id="course" aria-label="選擇課程">
+              <option value="">所有課程</option>
+            </select>
+          </div>
+        </div>
+        <div id="practice-layout" class="practice-layout">
+          <aside
+            id="article-navigation"
+            class="article-navigation"
+            aria-labelledby="navigation-title"
+            hidden
+          >
+            <span class="eyebrow">PRACTICE LIBRARY</span>
+            <h2 id="navigation-title">選擇練習種類</h2>
+            <nav id="member-navigation" aria-label="文章種類與類別"></nav>
+          </aside>
+          <div class="practice-main">
+            <section aria-labelledby="article-list-title">
+              <div class="section-heading">
+                <div>
+                  <h2 id="article-list-title">免費文章選擇</h2>
+                  <p id="article-list-description">
+                    不需登入，選擇文章即可開始練習。
+                  </p>
+                </div>
+              </div>
+              <div id="articles" class="cards"></div>
+            </section>
+            <section id="member-library" aria-labelledby="member-library-title">
+              <div class="section-heading">
+                <div>
+                  <h2 id="member-library-title">會員文章選擇</h2>
+                  <p>登入後即可練習會員文章，並保存練習紀錄。</p>
+                </div>
+              </div>
+              <div id="member-articles" class="cards"></div>
+            </section>
+            <section
+              id="workspace"
+              class="panel"
+              hidden
+              aria-labelledby="article-title"
+            >
+              <div class="section-heading">
+                <div>
+                  <span class="eyebrow">YOUR PRACTICE SPACE</span>
+                  <h2 id="article-title"></h2>
+                </div>
+                <span
+                  id="practice-status"
+                  class="pill"
+                  role="status"
+                  aria-live="polite"
+                  >準備開始</span
+                >
+              </div>
+              <div class="stats">
+                <div>
+                  <strong id="cpm">0</strong
+                  ><span id="cpm-label">CPM 正確字元 / 分</span>
+                </div>
+                <div id="wpm-stat">
+                  <strong id="wpm">0</strong><span>WPM 五字元 / 分</span>
+                </div>
+                <div>
+                  <strong id="accuracy">0%</strong><span>目前文字正確率</span>
+                </div>
+                <div>
+                  <strong id="elapsed">0:00</strong><span>練習時間</span>
+                </div>
+              </div>
+              <p id="chinese-stats" hidden></p>
+              <label for="typing" id="typing-hint"
+                >按「開始練習」後，沿著淡色文章輸入；全文正確後按 Enter
+                結束（中文選字確認後需再按一次，等待也會計時）</label
+              >
+              <p id="article-source" class="sr-only"></p>
+              <div class="typing-surface">
+                <div id="passage" class="typing-layer" aria-hidden="true"></div>
+                <div
+                  id="typed-overlay"
+                  class="typing-layer"
+                  aria-hidden="true"
+                ></div>
+                <textarea
+                  id="typing"
+                  aria-describedby="typing-hint article-source"
+                  disabled
+                  spellcheck="false"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                ></textarea>
+              </div>
+              <div class="actions">
+                <button id="start" class="primary">開始練習</button
+                ><button id="stop" disabled>停止並保存</button
+                ><span id="save-hint"></span>
+              </div>
+            </section>
+          </div>
+        </div>
+      </section>
+      <section id="statistics" class="view" hidden>
+        <span class="eyebrow">YOUR PROGRESS</span>
+        <h1>我的打字統計</h1>
+        <section class="panel">
+          <h2>全部紀錄總平均</h2>
+          <p>涵蓋帳號全部已完成練習，不受下方期間或篩選影響。</p>
+          <div id="statistics-overall" class="statistics-cards"></div>
+        </section>
+        <section class="panel" aria-labelledby="trend-title">
+          <h2 id="trend-title">指定期間平均打字速度</h2>
+          <p>
+            僅統計已完成的練習，每次速度取算術平均。中打與英打分開計算；尚無紀錄時不顯示為零分。
+          </p>
+          <div class="actions">
+            <label
+              >查看週期<select id="trend-period">
+                <option value="all">全部紀錄</option>
+                <option value="day">每日</option>
+                <option value="week">每週</option>
+                <option value="month">每月</option>
+                <option value="year">每年</option>
+              </select></label
+            ><label
+              >選擇日期<input
+                id="trend-date"
+                type="date"
+                min="1900-01-01"
+                max="9998-12-31"
+                required /></label
+            ><label
+              >圖表打字類型<select id="trend-mode">
+                <option value="zh">中打</option>
+                <option value="en">英打</option>
+              </select></label
+            >
+          </div>
+          <div class="actions">
+            <label>練習種類<select id="statistics-course"></select></label
+            ><label>文章<select id="statistics-article"></select></label
+            ><button id="statistics-refresh">更新統計</button>
+          </div>
+          <div id="statistics-period" class="statistics-cards"></div>
+          <div class="actions">
+            <button id="trend-previous">上一期</button
+            ><button id="trend-today">本期</button
+            ><button id="trend-next">下一期</button>
+          </div>
+          <p id="trend-status" role="status" aria-live="polite">
+            登入後即可查看每日速度。
+          </p>
+          <p id="trend-summary"></p>
+          <div id="trend-chart"></div>
+          <details>
+            <summary>查看每日資料</summary>
+            <div class="daily-table">
+              <table>
+                <caption>
+                  每日平均速度與練習次數
+                </caption>
+                <thead>
+                  <tr>
+                    <th scope="col">日期</th>
+                    <th scope="col">平均速度</th>
+                    <th scope="col">練習次數</th>
+                  </tr>
+                </thead>
+                <tbody id="trend-days"></tbody>
+              </table>
+            </div>
+          </details>
+          <p>
+            依瀏覽器時區歸日；週一為每週起點。種類與文章篩選適用於期間統計及圖表。未標記打字類型的舊紀錄不納入統計。
+          </p>
+        </section>
+        <section class="panel">
+          <h2>依練習種類</h2>
+          <div class="daily-table">
+            <table>
+              <caption>
+                符合所選期間及篩選的平均速度
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">練習種類</th>
+                  <th scope="col">中打平均／次數</th>
+                  <th scope="col">英打平均／次數</th>
+                </tr>
+              </thead>
+              <tbody id="statistics-courses"></tbody>
+            </table>
+          </div>
+        </section>
+        <section class="panel">
+          <h2>依文章</h2>
+          <div class="daily-table">
+            <table>
+              <caption>
+                符合所選期間及篩選的平均速度
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">文章</th>
+                  <th scope="col">中打平均／次數</th>
+                  <th scope="col">英打平均／次數</th>
+                </tr>
+              </thead>
+              <tbody id="statistics-articles"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+      <section id="history" class="view" hidden>
+        <span class="eyebrow">YOUR RECORDS</span>
+        <h1>練習紀錄</h1>
+        <h2>練習明細</h2>
+        <p>查看所有練習，或依課程、文章篩選。每頁 20 筆。</p>
+        <div class="actions">
+          <select id="history-course" aria-label="篩選課程"></select
+          ><select id="history-article" aria-label="篩選文章"></select
+          ><button id="refresh">更新紀錄</button>
+        </div>
+        <div id="history-list"></div>
+        <div class="actions">
+          <button id="previous">上一頁</button><span id="page-label"></span
+          ><button id="next">下一頁</button>
+        </div>
+      </section>
+      <section id="account" class="view" hidden>
+        <span class="eyebrow">A SPACE FOR YOUR GROWTH</span>
+        <h1>讓進步，有跡可循。</h1>
+        <div id="auth-forms" class="account-grid">
+          <form id="login" class="panel">
+            <h2>歡迎回來</h2>
+            <label
+              >Email<input
+                name="email"
+                type="email"
+                required
+                autocomplete="username"
+                maxlength="254" /></label
+            ><label
+              >密碼<input
+                name="password"
+                type="password"
+                required
+                autocomplete="current-password"
+                maxlength="72" /></label
+            ><button class="primary">登入</button>
+          </form>
+          <form id="register" class="panel">
+            <h2>建立會員帳號</h2>
+            <label
+              >Email<input
+                name="email"
+                type="email"
+                required
+                autocomplete="email"
+                maxlength="254" /></label
+            ><label
+              >密碼（10–72 字元，最多 72 UTF-8 bytes）<input
+                name="password"
+                type="password"
+                required
+                minlength="10"
+                maxlength="72"
+                autocomplete="new-password" /></label
+            ><label>生日<input name="birthday" type="date" required /></label
+            ><label
+              >電話<input
+                name="phone"
+                type="tel"
+                required
+                pattern="[+0-9\(\) \-]{6,30}"
+                autocomplete="tel" /></label
+            ><label
+              >名稱<input
+                name="name"
+                required
+                maxlength="80"
+                autocomplete="name" /></label
+            ><label
+              >暱稱<input
+                name="nickname"
+                required
+                maxlength="80"
+                autocomplete="nickname" /></label
+            ><button class="primary">註冊</button>
+          </form>
+        </div>
+        <form id="profile" class="panel" hidden>
+          <h2>會員資料</h2>
+          <p id="profile-email"></p>
+          <label>生日<input name="birthday" type="date" required /></label
+          ><label
+            >電話<input
+              name="phone"
+              type="tel"
+              required
+              pattern="[+0-9\(\) \-]{6,30}" /></label
+          ><label>名稱<input name="name" required maxlength="80" /></label
+          ><label>暱稱<input name="nickname" required maxlength="80" /></label
+          ><button class="primary">儲存資料</button>
+        </form>
+      </section>
+    </main>
+    <footer>字光 TypeLight <span>一點練習，一點進步。</span></footer>
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>
