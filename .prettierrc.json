@@ -1,0 +1,7 @@
+{
+  "singleQuote": true,
+  "endOfLine": "lf",
+  "plugins": ["@prettier/plugin-xml"],
+  "xmlWhitespaceSensitivity": "ignore",
+  "overrides": [{ "files": "*.ts", "options": { "parser": "typescript" } }]
+}
